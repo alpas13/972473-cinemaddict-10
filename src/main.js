@@ -1,5 +1,3 @@
-const TOTAL_CARDS = 5;
-
 import {createProfileTemplate} from './components/profile-name.js';
 import {createNavigationTemplate} from './components/menu.js';
 import {createSortingTemplate} from './components/sorting.js';
@@ -7,6 +5,8 @@ import {createFilmsSectionTemplate} from './components/list.js';
 import {createCardTemplate} from './components/card.js';
 import {createShowMoreButtonTemplate} from './components/button-show-more.js';
 import {createDetailCardTemplate} from './components/popup.js';
+
+const TOTAL_CARDS = 5;
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
