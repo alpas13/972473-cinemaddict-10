@@ -5,11 +5,11 @@ import {
   getRandomDataFromArray,
   generateTimeDuration,
   POSTER_PATH,
-  POSTERS,
+  posters,
   TIME_DATA,
-  FILMS_LIST,
-  GENRE,
-  DESCRIPTION_TEXT
+  filmsList,
+  genre,
+  descriptionText
 } from "./film-card";
 import {generateRandomInteger} from "../utils";
 
@@ -23,7 +23,7 @@ const Limiter = {
 const AGE = [12, 16, 18];
 const EMOJI_PATH = `./images/emoji/`;
 
-const DIRECTORS = [
+const directors = [
   `Francis Ford Coppola`,
   `Michael Curtiz`,
   `Stanley Kubrick`,
@@ -42,7 +42,7 @@ const DIRECTORS = [
   `Steven Spielberg`,
 ];
 
-const WRITERS = [
+const writers = [
   `Billy Wilder`,
   `Ethan Coen and Joel Coen`,
   `Robert Towne`,
@@ -55,7 +55,7 @@ const WRITERS = [
   `Ernest Lehman`
 ];
 
-const ACTORS = [
+const actors = [
   `Robert De Niro`,
   `Jack Nicholson`,
   `Marlon Brando`,
@@ -70,7 +70,7 @@ const ACTORS = [
   `Elizabeth Taylor`
 ];
 
-const COUNTRIES = [
+const countries = [
   `USA`,
   `Austria`,
   `Belgium`,
@@ -82,7 +82,7 @@ const COUNTRIES = [
   `Germany`
 ];
 
-const EMOJI = [
+const emoji = [
   `angry.png`,
   `puke.png`,
   `sleeping.png`,
@@ -90,7 +90,7 @@ const EMOJI = [
   `trophy.png`
 ];
 
-const COMMENT_TEXT = [
+const commentText = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
   `Fusce tristique felis at fermentum pharetra.`,
@@ -101,7 +101,7 @@ const COMMENT_TEXT = [
   `In rutrum ac purus sit amet tempus.`
 ];
 
-const COMMENT_AUTHORS = [
+const commentAuthors = [
   `Robert De Niro`,
   `Jack Nicholson`,
   `Marlon Brando`,
@@ -135,25 +135,25 @@ const generateCommentDate = () => {
 
 export const generateDetailFilmCard = () => {
   return {
-    poster: generateImgUrl(POSTER_PATH, POSTERS),
+    poster: generateImgUrl(POSTER_PATH, posters),
     age: getRandomDataFromArray(AGE).slice(0, 1),
-    title: generateFilmTitle(FILMS_LIST),
-    director: getRandomDataFromArray(DIRECTORS).slice(0, 1),
-    writers: getRandomDataFromArray(WRITERS).join(`, `),
-    actors: getRandomDataFromArray(ACTORS).join(`, `),
+    title: generateFilmTitle(filmsList),
+    director: getRandomDataFromArray(directors).slice(0, 1),
+    writers: getRandomDataFromArray(writers).join(`, `),
+    actors: getRandomDataFromArray(actors).join(`, `),
     releaseDate: generateFilmYear(`fullDate`),
     runtime: generateTimeDuration(),
-    country: getRandomDataFromArray(COUNTRIES).join(`, `),
-    genre: getRandomDataFromArray(GENRE),
-    description: DESCRIPTION_TEXT.join(` `),
+    country: getRandomDataFromArray(countries).join(`, `),
+    genre: getRandomDataFromArray(genre),
+    description: descriptionText.join(` `),
   };
 };
 
 const generateComment = () => {
   return {
-    emoji: generateImgUrl(EMOJI_PATH, EMOJI),
-    commentText: getRandomDataFromArray(COMMENT_TEXT),
-    author: getRandomDataFromArray(COMMENT_AUTHORS).slice(0, 1),
+    emoji: generateImgUrl(EMOJI_PATH, emoji),
+    commentText: getRandomDataFromArray(commentText),
+    author: getRandomDataFromArray(commentAuthors).slice(0, 1),
     commentDate: generateCommentDate(),
   };
 };
