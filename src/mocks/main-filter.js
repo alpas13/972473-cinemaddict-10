@@ -2,14 +2,14 @@ import {generateRandomInteger} from "../utils";
 
 const FILTER_LIMITER = 20;
 
-const FILTERS_LIST = [
+const filtersList = [
   `Watchlist`,
   `History`,
   `Favorites`
 ];
 
 export const generateFiltersIndicators = () => {
-  return FILTERS_LIST
+  return filtersList
       .map((value) => {
         const indicator = generateRandomInteger(FILTER_LIMITER);
         return {

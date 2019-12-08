@@ -20,7 +20,7 @@ const Limiter = {
   MIN: 1,
 };
 
-export const FILMS_LIST = [
+export const filmsList = [
   `The Shawshank Redemption`,
   `The Godfather`,
   `The Godfather: Part II`,
@@ -48,7 +48,7 @@ export const FILMS_LIST = [
   `The Usual Suspects`
 ];
 
-export const POSTERS = [
+export const posters = [
   `made-for-each-other.png`,
   `popeye-meets-sinbad.png`,
   `sagebrush-trail.jpg`,
@@ -59,7 +59,7 @@ export const POSTERS = [
   `the-man-with-the-golden-arm.jpg`
 ];
 
-export const DESCRIPTION_TEXT = [
+export const descriptionText = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
   `Fusce tristique felis at fermentum pharetra.`,
@@ -73,7 +73,7 @@ export const DESCRIPTION_TEXT = [
   `In rutrum ac purus sit amet tempus.`
 ];
 
-export const GENRE = [
+export const genre = [
   `Action`,
   `Adventure`,
   `Animation`,
@@ -99,7 +99,7 @@ export const GENRE = [
   `Western`
 ];
 
-const MONTH = [
+const monthList = [
   `January`,
   `February`,
   `March`,
@@ -134,7 +134,7 @@ export const generateFilmYear = (fullDate = false) => {
   const date = generateRandomInteger(28, 1);
   const month = generateRandomInteger(11);
 
-  return fullDate ? `${date} ${MONTH[month]} ${year - filmAge}` : year - filmAge;
+  return fullDate ? `${date} ${monthList[month]} ${year - filmAge}` : year - filmAge;
 };
 
 export const generateTimeDuration = () => {
@@ -159,12 +159,12 @@ export const getRandomDataFromArray = (data) => {
 
 export const generateFilmCard = () => {
   return {
-    poster: generateImgUrl(POSTER_PATH, POSTERS),
-    title: generateFilmTitle(FILMS_LIST),
+    poster: generateImgUrl(POSTER_PATH, posters),
+    title: generateFilmTitle(filmsList),
     year: generateFilmYear(),
     duration: generateTimeDuration(),
-    genre: getRandomDataFromArray(GENRE).slice(0, 1),
-    description: getRandomDataFromArray(DESCRIPTION_TEXT).join(` `),
+    genre: getRandomDataFromArray(genre).slice(0, 1),
+    description: getRandomDataFromArray(descriptionText).join(` `),
     comments: generateRandomInteger(MAX_COMMENTS),
   };
 };

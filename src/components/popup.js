@@ -1,36 +1,17 @@
-export const createDetailCardTemplate = (detailData, commentsData) => {
-  const {poster, age, title: {name, rating}, director, writers, actors, releaseDate, runtime, country, genre, description} = detailData;
-  const {totalComments, comments} = commentsData;
+import {createElement} from "../utils";
 
-  const createGenresMarkup = (data) => {
-    return data.map((value) => {
-      return `<span class="film-details__genre">${value}</span>`;
-    }).join(`\n`);
-  };
+export default class Popup {
+  constructor(detailData, commentsData) {
+    this._detailData = detailData;
+    this._commentsData = commentsData;
+    this._element = null;
+  }
 
-  const createCommentsMarkup = (data) => {
-    return data.map((value) => {
-      const {emoji, commentText, author, commentDate} = value;
-      return (`<li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="${emoji}" width="55" height="55" alt="emoji">
-            </span>
-            <div>
-              <p class="film-details__comment-text">${commentText}</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${author}</span>
-                <span class="film-details__comment-day">${commentDate}</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>`);
-    }).join(`\n`);
-  };
+  getTemplate() {
+    const {poster, age, title: {name, rating}, director, writers, actors, releaseDate, runtime, country, genre, description} = this._detailData;
+    const {totalComments, comments} = this._commentsData;
 
-  const genreMarkup = createGenresMarkup(genre);
-  const commentsMarkup = createCommentsMarkup(comments);
-
-  return (`<section class="film-details">
+    return (`<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="form-details__top-container">
       <div class="film-details__close">
@@ -83,7 +64,9 @@ export const createDetailCardTemplate = (detailData, commentsData) => {
             <tr class="film-details__row">
               <td class="film-details__term">Genres</td>
               <td class="film-details__cell">
-                ${genreMarkup}
+                ${genre.map((value) => (
+        `<span class="film-details__genre">${value}</span>`
+      )).join(`\n`)}
             </tr>
           </table>
 
@@ -110,7 +93,22 @@ export const createDetailCardTemplate = (detailData, commentsData) => {
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${totalComments}</span></h3>
 
         <ul class="film-details__comments-list">
-          ${commentsMarkup}
+          ${comments.map((value) => {
+        const {emoji, commentText, author, commentDate} = value;
+        return (`<li class="film-details__comment">
+            <span class="film-details__comment-emoji">
+              <img src="${emoji}" width="55" height="55" alt="emoji">
+            </span>
+            <div>
+              <p class="film-details__comment-text">${commentText}</p>
+              <p class="film-details__comment-info">
+                <span class="film-details__comment-author">${author}</span>
+                <span class="film-details__comment-day">${commentDate}</span>
+                <button class="film-details__comment-delete">Delete</button>
+              </p>
+            </div>
+          </li>`);
+      }).join(`\n`)}
         </ul>
 
         <div class="film-details__new-comment">
@@ -146,4 +144,17 @@ export const createDetailCardTemplate = (detailData, commentsData) => {
     </div>
   </form>
 </section>`);
-};
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
