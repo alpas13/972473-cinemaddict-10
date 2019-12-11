@@ -1,4 +1,4 @@
-import {generateRandomInteger} from "../utils";
+import {generateRandomInteger} from "../utils.js";
 
 export const POSTER_PATH = `./images/posters/`;
 export const TIME_DATA = new Date();

@@ -35,6 +35,10 @@ export default class FilmCard extends AbstractComponent {
         </article>`
     );
   }
+
+  setClickHandler(selector, handler) {
+    this.getElement().querySelector(selector).addEventListener(`click`, handler);
+  }
 }
 
 

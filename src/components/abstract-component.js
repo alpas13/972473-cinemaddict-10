@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import {createElement} from "../utils/render.js";
 
 export default class AbstractComponent {
   constructor() {
@@ -20,7 +20,7 @@ export default class AbstractComponent {
     return this._element;
   }
 
-  remove() {
+  removeElement() {
     this._element = null;
   }
 }

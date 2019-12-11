@@ -11,7 +11,7 @@ import {
   genre,
   descriptionText
 } from "./film-card";
-import {generateRandomInteger} from "../utils";
+import {generateRandomInteger} from "../utils.js";
 
 const Limiter = {
   MONTHS: 11,

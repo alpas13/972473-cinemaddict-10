@@ -11,7 +11,7 @@ import {generateListOfFilmsCards} from "./mocks/film-card.js";
 import {generateFiltersIndicators} from "./mocks/main-filter.js";
 import {generateDetailFilmCard} from "./mocks/popup-data.js";
 import {generateComments} from "./mocks/popup-data.js";
-import {render, RenderPosition} from "./utils";
+import {render, remove, RenderPosition} from "./utils/render";
 
 const TOTAL_CARDS = 16;
 const TOTAL_EXTRA_CARDS = 2;
@@ -34,7 +34,7 @@ const renderFilmCard = (container, card) => {
   });
 
   popupCloseButton.addEventListener(`click`, () => {
-    popupComponent.getElement().remove();
+    remove(popupComponent);
   });
 
   render(container, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
@@ -71,7 +71,6 @@ const generalCardsData = generateListOfFilmsCards(TOTAL_CARDS);
 let showingCardCount = SHOWING_CARD_COUNT_ON_START;
 
 generalCardsData.slice(0, showingCardCount).forEach((card) => {
-  // render(filmsListContainer, new FilmCardComponent(card).getElement(), RenderPosition.BEFOREEND);
   renderFilmCard(filmsListContainer, card);
 });
 
@@ -82,7 +81,6 @@ filmsListExtra.forEach((value) => {
   const filmsListExtraContainer = value.querySelector(`.films-list__container`);
   const extraCardsData = generateListOfFilmsCards(TOTAL_EXTRA_CARDS);
   extraCardsData.slice().forEach((card) => {
-    // render(filmsListExtraContainer, new FilmCardComponent(card).getElement(), RenderPosition.BEFOREEND);
     renderFilmCard(filmsListExtraContainer, card);
   });
 });
@@ -96,12 +94,11 @@ buttonShowMore.getElement().addEventListener(`click`, () => {
   showingCardCount += SHOWING_CARD_COUNT_BY_BUTTON;
 
   generalCardsData.slice(prevCardCount, showingCardCount).forEach((card) => {
-    // render(filmsListContainer, new FilmCardComponent(card).getElement(), RenderPosition.BEFOREEND);
     renderFilmCard(filmsListContainer, card);
   });
 
   if (showingCardCount >= generalCardsData.length) {
-    buttonShowMore.getElement().remove();
+    remove(buttonShowMore);
     buttonShowMore.removeElement();
   }
 });
