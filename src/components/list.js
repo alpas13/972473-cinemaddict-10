@@ -1,10 +1,6 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component.js";
 
-export default class FilmsList {
-  constructor() {
-    this._element = null;
-  }
-
+export default class FilmsList extends AbstractComponent {
   getTemplate() {
     return (
       `<section class="films">
@@ -14,17 +10,4 @@ export default class FilmsList {
         </section>`
     );
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
-
