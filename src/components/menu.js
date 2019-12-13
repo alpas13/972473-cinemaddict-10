@@ -1,9 +1,10 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component.js";
 
-export default class Menu {
+export default class Menu extends AbstractComponent {
   constructor(filters) {
+    super();
+
     this._filters = filters;
-    this._element = null;
   }
 
   getTemplate() {
@@ -17,17 +18,5 @@ export default class Menu {
     <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
   </nav>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

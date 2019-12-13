@@ -1,4 +1,4 @@
-import {generateRandomInteger} from "../utils";
+import {generateRandomInteger} from "../utils.js";
 
 const FILTER_LIMITER = 20;
 
