@@ -100,11 +100,11 @@ export default class Popup extends AbstractSmartComponent {
 
         <div class="film-details__user-score">
           <div class="film-details__user-rating-poster">
-            <img src="./images/posters/the-great-flamarion.jpg" alt="film-poster" class="film-details__user-rating-img">
+            <img src="${poster}" alt="film-poster" class="film-details__user-rating-img">
           </div>
 
           <section class="film-details__user-rating-inner">
-            <h3 class="film-details__user-rating-title">The Great Flamarion</h3>
+            <h3 class="film-details__user-rating-title">${name}</h3>
 
             <p class="film-details__user-rating-feelings">How you feel it?</p>
 

@@ -1,4 +1,5 @@
 import {generateRandomInteger} from "../utils.js";
+import moment from "moment";
 
 export const POSTER_PATH = `./images/posters/`;
 export const TIME_DATA = new Date();
@@ -99,21 +100,6 @@ export const genre = [
   `Western`
 ];
 
-const monthList = [
-  `January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `July`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`
-];
-
 export const generateFilmTitle = (data) => {
   const index = generateRandomInteger(data.length);
   const randomRating = Math.floor((Math.random() * (FilmRating.MAX - FilmRating.MIN) + FilmRating.MIN) * 10) / 10;
@@ -130,11 +116,15 @@ export const generateImgUrl = (path, data) => {
 
 export const generateFilmYear = (fullDate = false) => {
   const filmAge = generateRandomInteger(YEARS_PERIOD);
-  const year = TIME_DATA.getFullYear();
   const date = generateRandomInteger(28, 1);
-  const month = generateRandomInteger(11);
+  const randomMonth = generateRandomInteger(11);
+  const detailData = moment().subtract({
+    days: date,
+    month: randomMonth,
+    years: filmAge,
+  });
 
-  return fullDate ? `${date} ${monthList[month]} ${year - filmAge}` : year - filmAge;
+  return fullDate ? `${detailData.format(`DD MMMM YYYY`)}` : `${detailData.format(`YYYY`)}`;
 };
 
 export const generateTimeDuration = () => {

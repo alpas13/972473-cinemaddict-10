@@ -6,13 +6,13 @@ import {
   generateTimeDuration,
   POSTER_PATH,
   posters,
-  TIME_DATA,
   filmsList,
   genre,
   descriptionText,
   generateRandomBoolean,
 } from "./film-card";
 import {generateRandomInteger} from "../utils.js";
+import moment from "moment";
 
 const Limiter = {
   MONTHS: 11,
@@ -118,20 +118,19 @@ const commentAuthors = [
 ];
 
 const generateCommentDate = () => {
+  const monthAgo = generateRandomInteger(Limiter.MONTHS);
   const dayAgo = generateRandomInteger(Limiter.DAYS);
   const hoursAgo = generateRandomInteger(Limiter.HOURS);
   const minutesAgo = generateRandomInteger(Limiter.MINUTES);
-  let randomData = TIME_DATA;
-  randomData.setMonth(generateRandomInteger(Limiter.MONTHS));
-  randomData.setDate(randomData.getDate() - dayAgo);
-  randomData.setHours(hoursAgo, minutesAgo);
 
-  const month = randomData.getMonth() + 1 < 10 ? `0${randomData.getMonth() + 1}` : randomData.getMonth() + 1;
-  const date = randomData.getDate() < 10 ? `0${randomData.getDate()}` : randomData.getDate();
-  const hours = randomData.getHours() < 10 ? `0${randomData.getHours()}` : randomData.getHours();
-  const minutes = randomData.getMinutes() < 10 ? `0${randomData.getMinutes()}` : randomData.getMinutes();
+  const randomData = moment().subtract({
+    month: monthAgo,
+    days: dayAgo,
+    hours: hoursAgo,
+    minutes: minutesAgo,
+  }).format(`YYYY/MM/DD hh:mm`);
 
-  return (`${randomData.getFullYear()}/${month}/${date} ${hours}:${minutes}`);
+  return (`${randomData}`);
 };
 
 export const generateDetailFilmCard = () => {
