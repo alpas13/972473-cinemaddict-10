@@ -9,7 +9,8 @@ import {
   TIME_DATA,
   filmsList,
   genre,
-  descriptionText
+  descriptionText,
+  generateRandomBoolean,
 } from "./film-card";
 import {generateRandomInteger} from "../utils.js";
 
@@ -146,6 +147,9 @@ export const generateDetailFilmCard = () => {
     country: getRandomDataFromArray(countries).join(`, `),
     genre: getRandomDataFromArray(genre),
     description: descriptionText.join(` `),
+    isAddToWatchList: generateRandomBoolean(),
+    isWatched: generateRandomBoolean(),
+    isFavorite: generateRandomBoolean(),
   };
 };
 

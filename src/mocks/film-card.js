@@ -157,6 +157,10 @@ export const getRandomDataFromArray = (data) => {
   return selectedData;
 };
 
+export const generateRandomBoolean = () => {
+  return Math.random() > 0.5;
+};
+
 export const generateFilmCard = () => {
   return {
     poster: generateImgUrl(POSTER_PATH, posters),
@@ -166,6 +170,9 @@ export const generateFilmCard = () => {
     genre: getRandomDataFromArray(genre).slice(0, 1),
     description: getRandomDataFromArray(descriptionText).join(` `),
     comments: generateRandomInteger(MAX_COMMENTS),
+    isAddToWatchList: generateRandomBoolean(),
+    isWatched: generateRandomBoolean(),
+    isFavorite: generateRandomBoolean(),
   };
 };
 
