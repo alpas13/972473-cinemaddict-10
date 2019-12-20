@@ -2,7 +2,6 @@ import {generateRandomInteger} from "../utils.js";
 import moment from "moment";
 
 export const POSTER_PATH = `./images/posters/`;
-export const TIME_DATA = new Date();
 const YEARS_PERIOD = 70;
 const MAX_COMMENTS = 1000;
 
@@ -12,8 +11,10 @@ const FilmRating = {
 };
 
 const FilmDuration = {
-  MAX: 120,
-  MIN: 15,
+  MAX_HOUR: 2,
+  MIN_HOUR: 1,
+  MAX_MINUTES: 59,
+  MIN_MINUTES: 5,
 };
 
 const Limiter = {
@@ -128,12 +129,12 @@ export const generateFilmYear = (fullDate = false) => {
 };
 
 export const generateTimeDuration = () => {
-  const duration = generateRandomInteger(FilmDuration.MAX, FilmDuration.MIN);
+  const durationHours = generateRandomInteger(FilmDuration.MAX_HOUR, FilmDuration.MIN_HOUR);
+  const durationMinutes = generateRandomInteger(FilmDuration.MAX_MINUTES, FilmDuration.MIN_MINUTES);
 
-  if (duration > 60) {
-    return duration - 60 > 10 ? `1h ${duration - 60}m` : `1h 0${duration - 60}m`;
-  }
-  return `${duration}m`;
+  const duration = moment().hours(durationHours).minutes(durationMinutes);
+
+  return durationHours < 1 ? `${duration.format(`mm`)}m` : `${duration.format(`h`)}h ${duration.format(`mm`)}m`;
 };
 
 export const getRandomDataFromArray = (data) => {
