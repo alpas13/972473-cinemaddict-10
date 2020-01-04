@@ -3,6 +3,7 @@ import ExtraFilmsList from "../components/list-extra.js";
 import FilmsContainer from "../components/films-container.js";
 import ButtonShowMore from "../components/button-show-more.js";
 import MovieController from "./movie-controller.js";
+import NonFilms from "../components/non-films.js";
 import {render, remove, RenderPosition} from "../utils/render";
 
 export default class PageController {
@@ -26,6 +27,7 @@ export default class PageController {
   render(cards) {
     this._cards = cards;
     const filmsList = new FilmsList();
+    const nonFilms = new NonFilms();
     const topRatedFilms = new ExtraFilmsList(`Top rated`);
     const mostCommentFilms = new ExtraFilmsList(`Most commented`);
     const generalFilmsContainer = new FilmsContainer();
@@ -37,6 +39,12 @@ export default class PageController {
     this._onViewChange = this._onViewChange.bind(this);
 
     render(this._container, filmsList, RenderPosition.BEFOREEND);
+
+    if (!this._cards.length) {
+      render(filmsList.getElement(), nonFilms, RenderPosition.BEFOREEND);
+      return;
+    }
+
     render(filmsList.getElement(), generalFilmsContainer, RenderPosition.BEFOREEND);
 
     let newData = this.renderFilmCards(generalFilmsContainer, this._cards.slice(0, showingCardCount), this._onDataChange, this._onViewChange);

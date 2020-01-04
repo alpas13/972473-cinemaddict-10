@@ -200,12 +200,20 @@ export default class Popup extends AbstractSmartComponent {
   </form>
 </section>`);
   }
+
   recoveryListeners() {
     this._subscribeOnEvents();
   }
 
   _subscribeOnEvents() {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => remove(this));
+    document.addEventListener(`keydown`, (evt) => {
+      const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+      if (isEscKey) {
+        remove(this);
+      }
+    });
 
     this.getElement().querySelector(`#watchlist`).addEventListener(`change`, () => {
       this._detailData.isAddToWatchList = !this._detailData.isAddToWatchList;
