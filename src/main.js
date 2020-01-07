@@ -1,6 +1,5 @@
 import ProfileComponent from './components/profile-name.js';
 import MenuComponent from './components/menu.js';
-import SortingComponent from './components/sorting.js';
 import FilmsComponent from './components/films.js';
 import PageController from "./controller/page-controller.js";
 import {generateListOfFilmsCards} from "./mocks/film-card.js";
@@ -18,7 +17,6 @@ const filterData = generateFiltersIndicators();
 const filmsComponent = new FilmsComponent();
 
 render(siteMainElement, new MenuComponent(filterData), RenderPosition.BEFOREEND);
-render(siteMainElement, new SortingComponent(), RenderPosition.BEFOREEND);
 render(siteMainElement, filmsComponent, RenderPosition.BEFOREEND);
 
 const generalCardsData = generateListOfFilmsCards(TOTAL_CARDS);
