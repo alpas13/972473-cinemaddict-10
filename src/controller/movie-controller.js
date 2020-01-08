@@ -66,4 +66,9 @@ export default class MovieController {
       remove(this._popupComponent);
     }
   }
+
+  destroy() {
+    remove(this._filmCardComponent);
+    remove(this._popupComponent);
+  }
 }
