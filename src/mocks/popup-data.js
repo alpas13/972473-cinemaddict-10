@@ -141,7 +141,7 @@ export const generateDetailFilmCard = () => {
     director: getRandomDataFromArray(directors).slice(0, 1),
     writers: getRandomDataFromArray(writers).join(`, `),
     actors: getRandomDataFromArray(actors).join(`, `),
-    releaseDate: generateFilmYear(`fullDate`),
+    releaseDate: generateFilmYear(),
     runtime: generateTimeDuration(),
     country: getRandomDataFromArray(countries).join(`, `),
     genre: getRandomDataFromArray(genre),
