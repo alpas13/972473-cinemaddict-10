@@ -1,5 +1,6 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import {remove} from "../utils/render.js";
+import {formatDate, formatTime} from "../utils/common.js";
 
 export default class Popup extends AbstractSmartComponent {
   constructor(detailData, commentsData) {
@@ -55,11 +56,11 @@ export default class Popup extends AbstractSmartComponent {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${releaseDate}</td>
+              <td class="film-details__cell">${formatDate(releaseDate)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${runtime}</td>
+              <td class="film-details__cell">${formatTime(runtime)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>

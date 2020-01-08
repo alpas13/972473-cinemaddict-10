@@ -1,5 +1,4 @@
 import {generateRandomInteger} from "../utils.js";
-import moment from "moment";
 
 export const POSTER_PATH = `./images/posters/`;
 const YEARS_PERIOD = 70;
@@ -11,10 +10,8 @@ const FilmRating = {
 };
 
 const FilmDuration = {
-  MAX_HOUR: 2,
-  MIN_HOUR: 1,
-  MAX_MINUTES: 59,
-  MIN_MINUTES: 5,
+  MAX_MINUTES: 120,
+  MIN_MINUTES: 15,
 };
 
 const Limiter = {
@@ -115,26 +112,16 @@ export const generateImgUrl = (path, data) => {
   return path + data[index];
 };
 
-export const generateFilmYear = (fullDate = false) => {
+export const generateFilmYear = () => {
   const filmAge = generateRandomInteger(YEARS_PERIOD);
   const date = generateRandomInteger(28, 1);
   const randomMonth = generateRandomInteger(11);
-  const detailData = moment().subtract({
-    days: date,
-    month: randomMonth,
-    years: filmAge,
-  });
 
-  return fullDate ? `${detailData.format(`DD MMMM YYYY`)}` : `${detailData.format(`YYYY`)}`;
+  return new Date(Date.UTC(filmAge, randomMonth, date));
 };
 
 export const generateTimeDuration = () => {
-  const durationHours = generateRandomInteger(FilmDuration.MAX_HOUR, FilmDuration.MIN_HOUR);
-  const durationMinutes = generateRandomInteger(FilmDuration.MAX_MINUTES, FilmDuration.MIN_MINUTES);
-
-  const duration = moment().hours(durationHours).minutes(durationMinutes);
-
-  return durationHours < 1 ? `${duration.format(`mm`)}m` : `${duration.format(`h`)}h ${duration.format(`mm`)}m`;
+  return generateRandomInteger(FilmDuration.MAX_MINUTES, FilmDuration.MIN_MINUTES);
 };
 
 export const getRandomDataFromArray = (data) => {
