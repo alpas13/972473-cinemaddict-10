@@ -154,6 +154,7 @@ export const generateDetailFilmCard = () => {
 
 const generateComment = () => {
   return {
+    id: new Date().toISOString() + Math.random(),
     emoji: generateImgUrl(EMOJI_PATH, emoji),
     commentText: getRandomDataFromArray(commentText),
     author: getRandomDataFromArray(commentAuthors).slice(0, 1),

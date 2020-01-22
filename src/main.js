@@ -1,10 +1,10 @@
 import ProfileComponent from './components/profile-name.js';
-import MenuComponent from './components/menu.js';
 import FilmsComponent from './components/films.js';
 import PageController from "./controller/page-controller.js";
+import MoviesModel from "./models/movies.js";
+import FilterController from "./controller/filter.js";
 import {generateListOfFilmsCards} from "./mocks/film-card.js";
-import {generateFiltersIndicators} from "./mocks/main-filter.js";
-import {render, RenderPosition} from "./utils/render";
+import {render, RenderPosition} from "./utils/render.js";
 
 const TOTAL_CARDS = 16;
 
@@ -13,14 +13,15 @@ const siteMainElement = document.querySelector(`.main`);
 
 render(siteHeaderElement, new ProfileComponent(), RenderPosition.BEFOREEND);
 
-const filterData = generateFiltersIndicators();
-const filmsComponent = new FilmsComponent();
+const moviesModel = new MoviesModel();
+moviesModel.setMovies(generateListOfFilmsCards(TOTAL_CARDS));
 
-render(siteMainElement, new MenuComponent(filterData), RenderPosition.BEFOREEND);
+const filterController = new FilterController(siteMainElement, moviesModel);
+filterController.render();
+
+const filmsComponent = new FilmsComponent();
 render(siteMainElement, filmsComponent, RenderPosition.BEFOREEND);
 
-const generalCardsData = generateListOfFilmsCards(TOTAL_CARDS);
+const pageController = new PageController(filmsComponent.getElement(), moviesModel);
 
-const pageController = new PageController(filmsComponent.getElement());
-
-pageController.render(generalCardsData);
+pageController.render();
