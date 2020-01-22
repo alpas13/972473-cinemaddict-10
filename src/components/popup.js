@@ -149,7 +149,7 @@ export default class Popup extends AbstractSmartComponent {
 
         <ul class="film-details__comments-list">
           ${comments.map((value) => {
-        const {emoji, commentText, author, commentDate} = value;
+        const {id, emoji, commentText, author, commentDate} = value;
         return (`<li class="film-details__comment">
             <span class="film-details__comment-emoji">
               <img src="${emoji}" width="55" height="55" alt="emoji">
@@ -159,7 +159,7 @@ export default class Popup extends AbstractSmartComponent {
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${author}</span>
                 <span class="film-details__comment-day">${commentDate}</span>
-                <button class="film-details__comment-delete">Delete</button>
+                <button id="${id}" class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>`);
@@ -236,6 +236,13 @@ export default class Popup extends AbstractSmartComponent {
         this._newCommetnEmoji = `<img src="${evt.target.src}" width="55" height="55" alt="emoji">`;
       }
       this.rerender();
+    });
+
+    this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      if (evt.target.tagName === `BUTTON`) {
+        console.log(evt);
+      }
     });
   }
 }

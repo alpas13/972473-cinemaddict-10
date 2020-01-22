@@ -141,6 +141,7 @@ export const generateRandomBoolean = () => {
 
 export const generateFilmCard = () => {
   return {
+    id: String(Date.now() + Math.random()),
     poster: generateImgUrl(POSTER_PATH, posters),
     title: generateFilmTitle(filmsList),
     year: generateFilmYear(),
