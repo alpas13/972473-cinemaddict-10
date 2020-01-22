@@ -237,13 +237,11 @@ export default class Popup extends AbstractSmartComponent {
       }
       this.rerender();
     });
-  }
 
-  deleteCommentHandler(handler) {
     this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       if (evt.target.tagName === `BUTTON`) {
-        handler();
+        console.log(evt);
       }
     });
   }
