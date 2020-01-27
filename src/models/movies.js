@@ -19,14 +19,15 @@ export default class Movies {
 
   setMovies(movies) {
     this._movies = Array.from(movies);
+    this._callHandlers(this._dataChangeHandlers);
   }
 
   setFilter(filterType) {
     this._activeFilterType = filterType;
-    this._filterChangeHandlers.forEach((handler) => handler());
+    this._callHandlers(this._filterChangeHandlers);
   }
 
-  upDateMovie(id, newMovie) {
+  updateMovie(id, newMovie) {
     const index = this.getMovies().findIndex((it) => it.id === id);
 
     if (index === -1) {
@@ -35,7 +36,7 @@ export default class Movies {
 
     const cards = [].concat(this.getMovies().slice(0, index), newMovie, this.getMovies().slice(index + 1));
     this.setMovies(cards);
-    this.setDataChangeHandlers.forEach((handler) => handler());
+    this._callHandlers(this._dataChangeHandlers);
 
     return true;
   }
@@ -46,5 +47,9 @@ export default class Movies {
 
   setFilterChangeHandler(handler) {
     this._filterChangeHandlers.push(handler);
+  }
+
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
   }
 }

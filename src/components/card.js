@@ -5,15 +5,15 @@ export default class FilmCard extends AbstractComponent {
   constructor(card) {
     super();
 
-    const {poster, title: {name, rating}, year, duration, genre, description, comments, isAddToWatchList, isWatched, isFavorite} = card;
+    const {poster, title, totalRating, releaseDate, runtime, genre, description, comments, isAddToWatchList, isWatched, isFavorite} = card;
     this._poster = poster;
-    this._name = name;
-    this._rating = rating;
-    this._year = year;
-    this._duration = duration;
-    this._genre = genre;
+    this._title = title;
+    this._rating = totalRating;
+    this._year = releaseDate;
+    this._runtime = runtime;
+    this._genre = genre.join(` `);
     this._description = description;
-    this._comments = comments;
+    this._comments = comments.length;
     this._isAddToWatchList = isAddToWatchList;
     this._isWatched = isWatched;
     this._isFavorite = isFavorite;
@@ -21,11 +21,11 @@ export default class FilmCard extends AbstractComponent {
 
   getTemplate() {
     return (`<article class="film-card">
-          <h3 class="film-card__title">${this._name}</h3>
+          <h3 class="film-card__title">${this._title}</h3>
           <p class="film-card__rating">${this._rating}</p>
           <p class="film-card__info">
             <span class="film-card__year">${formatYear(this._year)}</span>
-            <span class="film-card__duration">${formatTime(this._duration)}</span>
+            <span class="film-card__duration">${formatTime(this._runtime)}</span>
             <span class="film-card__genre">${this._genre}</span>
           </p>
           <img src="${this._poster}" alt="" class="film-card__poster">
@@ -52,7 +52,7 @@ export default class FilmCard extends AbstractComponent {
     this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, handler);
   }
 
-  setAddToFavorite(handler) {
+  setAddToFavoriteHandler(handler) {
     this.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, handler);
   }
 }

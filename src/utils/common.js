@@ -8,6 +8,10 @@ export const formatYear = (date) => {
   return moment(date).format(`YYYY`);
 };
 
+export const formatCommentDate = (date) => {
+  return moment(date).format(`YYYY/MM/DD hh:mm`);
+};
+
 export const formatTime = (durationTime) => {
   let duration = null;
 
