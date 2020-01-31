@@ -1,5 +1,10 @@
 import AbstractComponent from "./abstract-component.js";
 
+export const MenuItem = {
+  STATISTICS: `main-navigation__item--additional`,
+  ALL_MOVIES: `main-navigation__item--active`,
+};
+
 export default class Menu extends AbstractComponent {
   constructor(filters) {
     super();
@@ -39,5 +44,15 @@ export default class Menu extends AbstractComponent {
     let filterName = ``;
     const firstLetter = hash.substring(1, 2).toUpperCase();
     return filterName.concat(firstLetter, hash.substring(2));
+  }
+
+  statShowClickHandler(handler) {
+    this.getElement().addEventListener(`click`, (evt) => {
+      if (evt.target.classList.contains(`main-navigation__item--additional`)) {
+        handler(MenuItem.STATISTICS);
+      } else if (evt.target.classList.contains(`main-navigation__item--active`)) {
+        handler(MenuItem.ALL_MOVIES);
+      }
+    });
   }
 }

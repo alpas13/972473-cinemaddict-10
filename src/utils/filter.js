@@ -31,3 +31,13 @@ export const getMoviesByFilter = (movies, filter) => {
 
   return movies;
 };
+
+export const getFilters = (movies) => {
+  return Object.values(FilterType)
+      .map((filter) => {
+        return {
+          name: filter,
+          count: getMoviesByFilter(movies, filter).length,
+        };
+      });
+};

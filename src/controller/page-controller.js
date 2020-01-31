@@ -6,13 +6,13 @@ import ButtonShowMore from "../components/button-show-more.js";
 import MovieController from "./movie-controller.js";
 import NonFilms from "../components/non-films.js";
 import {render, remove, RenderPosition} from "../utils/render";
-// import card from "../components/card";
 
 export default class PageController {
-  constructor(container, moviesModel, api) {
+  constructor(container, moviesModel, api, filterController) {
     this._container = container;
     this._moviesModel = moviesModel;
     this._api = api;
+    this._filterController = filterController;
     this._TOTAL_EXTRA_CARDS = 2;
     this._SHOWING_CARD_COUNT_ON_START = 5;
     this._SHOWING_CARD_COUNT_BY_BUTTON = 5;
@@ -161,8 +161,8 @@ export default class PageController {
 
   _onDataChange(movieController, oldData, newData) {
     if (newData === null) {
-      movieController.render(oldData);
       this._moviesModel.updateMovie(oldData.id, oldData);
+      movieController.render(oldData);
       this._removeExtraCardsList();
       this._renderTopRatedFilmsList(this._moviesModel.getMovies());
       this._renderMostCommentFilmsList(this._moviesModel.getMovies());
@@ -204,8 +204,8 @@ export default class PageController {
 
     this._renderShowMoreButton(sortedCards);
 
-    this._renderTopRatedFilmsList(sortedCards);
-    this._renderMostCommentFilmsList(sortedCards);
+    this._renderTopRatedFilmsList(this._moviesModel.getMovies());
+    this._renderMostCommentFilmsList(this._moviesModel.getMovies());
   }
 
   _onViewChange() {
@@ -230,5 +230,13 @@ export default class PageController {
     this._renderShowMoreButton(this._moviesModel.getMovies());
     this._renderTopRatedFilmsList(this._moviesModel.getMovies());
     this._renderMostCommentFilmsList(this._moviesModel.getMovies());
+  }
+
+  show() {
+    this._container.classList.remove(`visually-hidden`);
+  }
+
+  hide() {
+    this._container.classList.add(`visually-hidden`);
   }
 }

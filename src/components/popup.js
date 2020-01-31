@@ -1,3 +1,4 @@
+import he from "he";
 import AbstractSmartComponent from "./abstract-smart-component";
 import {remove} from "../utils/render.js";
 import {formatDate, formatTime, formatCommentDate} from "../utils/common.js";
@@ -288,7 +289,7 @@ export default class Popup extends AbstractSmartComponent {
         this._isControlKey = true;
         const commentText = this.getElement().querySelector(`.film-details__comment-input`).value;
         if (this._isControlKey && this._comment !== commentText) {
-          this._comment = commentText;
+          this._comment = he.encode(commentText);
         }
       }
     });

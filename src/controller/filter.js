@@ -1,6 +1,6 @@
 import MenuComponent from '../components/menu.js';
 import {render, RenderPosition} from "../utils/render.js";
-import {FilterType, getMoviesByFilter} from "../utils/filter";
+import {FilterType, getFilters} from "../utils/filter";
 import {replace} from "../utils/render.js";
 
 export default class Filter {
@@ -8,6 +8,8 @@ export default class Filter {
     this._container = container;
     this._movies = moviesModel;
     this._menuComponent = null;
+    this._menuItem = null;
+    this._setOnChange = null;
     this._activeFilterType = FilterType.ALL;
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
@@ -17,28 +19,22 @@ export default class Filter {
 
   render() {
     this._allMovies = this._movies.getAllMovies();
-    const filters = this._getFilters(this._allMovies);
+    const filters = getFilters(this._allMovies);
 
     const oldComponent = this._menuComponent;
 
     this._menuComponent = new MenuComponent(filters);
     this._menuComponent.setFilterChangeHandler(this._onFilterChange);
+    this._menuComponent.statShowClickHandler((menuItem) => {
+      this._menuItem = menuItem;
+      this.setOnChange(this._setOnChange);
+    });
 
     if (oldComponent) {
       replace(this._menuComponent, oldComponent);
     } else {
       render(this._container, this._menuComponent, RenderPosition.BEFOREEND);
     }
-  }
-
-  _getFilters(movies) {
-    return Object.values(FilterType)
-        .map((filter) => {
-          return {
-            name: filter,
-            count: getMoviesByFilter(movies, filter).length,
-          };
-        });
   }
 
   _onFilterChange(filterType) {
@@ -48,5 +44,10 @@ export default class Filter {
 
   _onDataChange() {
     this.render();
+  }
+
+  setOnChange(handler) {
+    handler(this._menuItem);
+    this._setOnChange = handler;
   }
 }
