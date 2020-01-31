@@ -23,21 +23,10 @@ export default class MovieController {
   }
 
   render(card) {
-    this._api.getComment(card.id)
-        .then((comments) => {
-          this._renderCard(card, comments);
-        })
-        .catch((err) => {
-          throw err;
-        });
-  }
-
-  _renderCard(card, comments) {
     const oldFilmCardComponent = this._filmCardComponent;
     const oldPopupComponent = this._popupComponent;
 
     this._filmCardComponent = new FilmCardComponent(card);
-    this._popupComponent = new PopupComponent(card, comments);
 
     const onClickHandler = () => {
       this._onViewChange();
@@ -67,6 +56,23 @@ export default class MovieController {
       this._onDataChange(this, card, newData);
     });
 
+    this._api.getComment(card.id)
+        .then((comments) => {
+          this._popupComponent = new PopupComponent(card, comments);
+          this._setPopupHandlers(card);
+          if (oldFilmCardComponent && oldPopupComponent) {
+            replace(this._filmCardComponent, oldFilmCardComponent);
+            replace(this._popupComponent, oldPopupComponent);
+          } else {
+            render(this._container.getElement(), this._filmCardComponent, RenderPosition.BEFOREEND);
+          }
+        })
+        .catch((err) => {
+          throw err;
+        });
+  }
+
+  _setPopupHandlers(card) {
     this._popupComponent.setAddToWatchlistClickHandler(() => {
       const newData = Movie.clone(card);
       newData.isAddToWatchList = !newData.isAddToWatchList;
@@ -129,20 +135,13 @@ export default class MovieController {
 
     this._popupComponent.addCommentHandler((data) => {
       this._api.createComment(card.id, data)
-          .then(() => {
-            this._onDataChange(this, card, null);
+          .then((movie) => {
+            this._onDataChange(this, movie, null);
           })
           .catch(() => {
             this._shake();
           });
     });
-
-    if (oldFilmCardComponent && oldPopupComponent) {
-      replace(this._filmCardComponent, oldFilmCardComponent);
-      replace(this._popupComponent, oldPopupComponent);
-    } else {
-      render(this._container.getElement(), this._filmCardComponent, RenderPosition.BEFOREEND);
-    }
   }
 
   _deleteCommentId(card, id) {
