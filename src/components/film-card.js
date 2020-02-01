@@ -12,7 +12,7 @@ export default class FilmCard extends AbstractComponent {
     this._year = releaseDate;
     this._runtime = runtime;
     this._genre = genre.join(` `);
-    this._description = description.length > 140 ? description.slice(0, 137).concat(`...`) : description;
+    this._description = description.length > 140 ? description.slice(0, 139).concat(`...`) : description;
     this._comments = comments.length;
     this._isAddToWatchList = isAddToWatchList;
     this._isWatched = isWatched;
