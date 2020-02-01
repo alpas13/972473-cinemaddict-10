@@ -61,9 +61,6 @@ export default class Popup extends AbstractSmartComponent {
     this._deleteCommentHandler = null;
     this._addCommentHandler = null;
 
-    this._isControlKey = false;
-    this._isMetaKey = false;
-
     this._subscribeOnEvents();
     this._selectPersonalRating();
   }
@@ -281,24 +278,11 @@ export default class Popup extends AbstractSmartComponent {
     });
 
     document.addEventListener(`keydown`, (evt) => {
-      if (evt.key === `Meta` || evt.key === `Windows` || evt.key === `Command`) {
-        this._isMetaKey = true;
-        return;
-      }
-      if (evt.key === `Control` || evt.key === `Ctrl`) {
-        this._isControlKey = true;
+      if (evt.ctrlKey) {
         const commentText = this.getElement().querySelector(`.film-details__comment-input`).value;
-        if (this._isControlKey && this._comment !== commentText) {
+        if (this._comment !== commentText) {
           this._comment = he.encode(commentText);
         }
-      }
-    });
-
-    document.addEventListener(`keyup`, (evt) => {
-      if (evt.key === `Control` || evt.key === `Ctrl`) {
-        this._isControlKey = false;
-      } else if (evt.key === `Meta` || evt.key === `Windows` || evt.key === `Command`) {
-        this._isMetaKey = false;
       }
     });
   }
@@ -353,19 +337,23 @@ export default class Popup extends AbstractSmartComponent {
   }
 
   deleteCommentHandler(handler) {
-    this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-      if (evt.target.tagName === `BUTTON`) {
-        handler(evt.target.id);
-      }
-    });
+    this.getElement().querySelector(`.film-details__comments-list`)
+        .addEventListener(`click`, (evt) => {
+          evt.preventDefault();
+          if (evt.target.tagName === `BUTTON`) {
+            handler(evt.target.id);
+            const deleteButton = evt.target;
+            deleteButton.textContent = `Deleting…`;
+            deleteButton.disabled = `disabled`;
+          }
+        });
     this._deleteCommentHandler = handler;
   }
 
   addCommentHandler(handler) {
     document.addEventListener(`keydown`, (evt) => {
       const isEnterKey = evt.key === `Enter`;
-      if (this._isControlKey && this._isMetaKey && isEnterKey && this._emotion && this._comment) {
+      if ((evt.ctrlKey) && isEnterKey && this._emotion && this._comment) {
         const commentElement = this.getElement().querySelector(`.film-details__comment-input`);
         const emojiElements = this.getElement().querySelectorAll(`.film-details__emoji-item`);
         const commentData = {

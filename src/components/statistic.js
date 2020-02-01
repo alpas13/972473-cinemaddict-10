@@ -2,8 +2,9 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import AbstractSmartComponent from "./abstract-smart-component";
 import {formatTime} from "../utils/common.js";
+import {setProfileName} from "../utils/common.js";
 
-export default class Stat extends AbstractSmartComponent {
+export default class Statistic extends AbstractSmartComponent {
   constructor(moviesModel) {
     super();
 
@@ -15,9 +16,9 @@ export default class Stat extends AbstractSmartComponent {
       YEAR: `year`
     };
 
+    this._profileName = ``;
     this._dateFrom = null;
     this._dateTo = null;
-    this._flatpickr = null;
     this._moviesModel = moviesModel;
     this._movies = [];
     this._filmsByDate = [];
@@ -31,7 +32,7 @@ export default class Stat extends AbstractSmartComponent {
   getTemplate() {
     return (`<section class="statistic">
     <p class="statistic__rank">
-      Your rank
+      ${this._profileName}
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
       <span class="statistic__rank-label">Sci-Fighter</span>
     </p>
@@ -92,6 +93,7 @@ export default class Stat extends AbstractSmartComponent {
 
   setData() {
     this._movies = this._moviesModel.getAllMovies();
+    this._profileName = setProfileName(this._movies);
     this._filmsByDate = this._getMoviesByDateRange(this._movies, this._dateFrom, this._dateTo);
     this._filmsCount = this._filmsByDate.length;
     this._filmsDuration = this._filmsByDate.reduce((acc, movie) => {
