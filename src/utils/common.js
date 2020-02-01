@@ -26,3 +26,17 @@ export const formatTime = (durationTime, format = null) => {
   }
   return null;
 };
+
+export const setProfileName = (movies) => {
+  const moviesNumber = movies.filter((movie) => movie.isWatched === true).length;
+  let profileRating = ``;
+
+  if (moviesNumber >= 1 && moviesNumber < 11) {
+    profileRating = `Novice`;
+  } else if (moviesNumber >= 11 && moviesNumber < 21) {
+    profileRating = `Fan`;
+  } else if (moviesNumber >= 21) {
+    profileRating = `Movie Buff`;
+  }
+  return profileRating;
+};

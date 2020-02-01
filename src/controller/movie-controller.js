@@ -1,7 +1,8 @@
-import FilmCardComponent from "../components/card";
+import FilmCardComponent from "../components/film-card";
 import PopupComponent from "../components/popup";
 import {render, replace, RenderPosition, remove} from "../utils/render";
-import Movie from "../models/movie.js";
+import Movie from "../models/movie";
+import Comment from "../models/comment";
 
 const Mode = {
   DEFAULT: `default`,
@@ -20,6 +21,7 @@ export default class MovieController {
     this._onViewChange = onViewChange;
     this._mode = Mode.DEFAULT;
     this._api = api;
+    this._comments = [];
   }
 
   render(card) {
@@ -27,11 +29,22 @@ export default class MovieController {
     const oldPopupComponent = this._popupComponent;
 
     this._filmCardComponent = new FilmCardComponent(card);
+    this._popupComponent = new PopupComponent(card, this._comments);
+    this._setPopupHandlers(card);
 
     const onClickHandler = () => {
-      this._onViewChange();
-      render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
-      this._mode = Mode.EDIT;
+      this._api.getComment(card.id)
+          .then((comments) => {
+            this._popupComponent = new PopupComponent(card, comments);
+            this._setPopupHandlers(card);
+            this._onViewChange();
+            render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
+            this._mode = Mode.EDIT;
+            this._comments = comments;
+          })
+          .catch((err) => {
+            throw err;
+          });
     };
 
     this._filmCardComponent.setClickHandler(`.film-card__poster`, onClickHandler);
@@ -56,20 +69,12 @@ export default class MovieController {
       this._onDataChange(this, card, newData);
     });
 
-    this._api.getComment(card.id)
-        .then((comments) => {
-          this._popupComponent = new PopupComponent(card, comments);
-          this._setPopupHandlers(card);
-          if (oldFilmCardComponent && oldPopupComponent) {
-            replace(this._filmCardComponent, oldFilmCardComponent);
-            replace(this._popupComponent, oldPopupComponent);
-          } else {
-            render(this._container.getElement(), this._filmCardComponent, RenderPosition.BEFOREEND);
-          }
-        })
-        .catch((err) => {
-          throw err;
-        });
+    if (oldFilmCardComponent && oldPopupComponent) {
+      replace(this._filmCardComponent, oldFilmCardComponent);
+      replace(this._popupComponent, oldPopupComponent);
+    } else {
+      render(this._container.getElement(), this._filmCardComponent, RenderPosition.BEFOREEND);
+    }
   }
 
   _setPopupHandlers(card) {
@@ -125,17 +130,21 @@ export default class MovieController {
     this._popupComponent.deleteCommentHandler((id) => {
       this._api.deleteComment(id)
           .then(() => {
+            this._comments = this._deleteCommentId(this._comments, id);
             const newData = this._deleteCommentId(card, id);
             this._onDataChange(this, newData, null);
           })
           .catch((err) => {
+            this._popupComponent.rerender();
             throw err;
           });
     });
 
     this._popupComponent.addCommentHandler((data) => {
       this._api.createComment(card.id, data)
-          .then((movie) => {
+          .then((response) => {
+            const movie = Movie.parseMovie(response.movie);
+            this._comments = Comment.parseComments(response.comments);
             this._onDataChange(this, movie, null);
           })
           .catch(() => {
@@ -144,15 +153,25 @@ export default class MovieController {
     });
   }
 
-  _deleteCommentId(card, id) {
-    const index = card.comments.findIndex((it) => it === id);
+  _deleteCommentId(commentsData, id) {
+    if (commentsData.comments) {
+      const index = commentsData.comments.findIndex((it) => it === id);
+      if (index === -1) {
+        return commentsData;
+      }
 
-    if (index === -1) {
-      return card;
+      commentsData.comments = [].concat(commentsData.comments.slice(0, index), commentsData.comments.slice(index + 1));
+      return commentsData;
+    } else {
+      const index = commentsData.findIndex((it) => it.id === id);
+      if (index === -1) {
+        return commentsData;
+      }
+
+      commentsData = [].concat(commentsData.slice(0, index), commentsData.slice(index + 1));
+      return commentsData;
     }
 
-    card.comments = [].concat(card.comments.slice(0, index), card.comments.slice(index + 1));
-    return card;
   }
 
   setDefaultView() {

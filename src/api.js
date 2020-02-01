@@ -16,7 +16,7 @@ const checkStatus = (response) => {
   }
 };
 
-const API = class {
+export default class Api {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
@@ -41,9 +41,7 @@ const API = class {
       body: JSON.stringify(comment.toRAW()),
       headers: new Headers({'Content-Type': `application/json`}),
     })
-        .then((response) => response.json())
-        .then((responseData) => responseData.movie)
-        .then(Movie.parseMovie);
+        .then((response) => response.json());
   }
 
   updateMovie(movieId, data) {
@@ -69,6 +67,4 @@ const API = class {
           throw err;
         });
   }
-};
-
-export default API;
+}
