@@ -60,6 +60,7 @@ export default class Popup extends AbstractSmartComponent {
     this._setFilmUserRatingHandler = null;
     this._deleteCommentHandler = null;
     this._addCommentHandler = null;
+    this._closePopupHandler = null;
 
     this._subscribeOnEvents();
     this._selectPersonalRating();
@@ -261,18 +262,10 @@ export default class Popup extends AbstractSmartComponent {
     this.setFilmUserRatingHandler(this._setFilmUserRatingHandler);
     this.deleteCommentHandler(this._deleteCommentHandler);
     this.addCommentHandler(this._addCommentHandler);
+    this.closePopupHandler(this._closePopupHandler);
   }
 
   _subscribeOnEvents() {
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => remove(this));
-    document.addEventListener(`keydown`, (evt) => {
-      const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-      if (isEscKey) {
-        remove(this);
-      }
-    });
-
     this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`change`, (evt) => {
       this._emotionChangeClickHandler(evt);
     });
@@ -371,6 +364,24 @@ export default class Popup extends AbstractSmartComponent {
       }
     });
     this._addCommentHandler = handler;
+  }
+
+  closePopupHandler(handler) {
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
+      handler();
+      remove(this);
+    });
+
+    document.addEventListener(`keydown`, (evt) => {
+      const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+      if (isEscKey) {
+        handler();
+        remove(this);
+      }
+    });
+
+    this._closePopupHandler = handler;
   }
 
   _selectPersonalRating() {

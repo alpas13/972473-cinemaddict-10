@@ -1,9 +1,10 @@
 import {FilterType, getMoviesByFilter} from "../utils/filter.js";
 
 export default class Movies {
-  constructor() {
+  constructor(api) {
     this._movies = [];
 
+    this._api = api;
     this._activeFilterType = FilterType.ALL;
     this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
@@ -27,16 +28,15 @@ export default class Movies {
     this._callHandlers(this._filterChangeHandlers);
   }
 
-  updateMovie(id, newMovie) {
-    const index = this.getMovies().findIndex((it) => it.id === id);
-
-    if (index === -1) {
-      return false;
-    }
-
-    const cards = [].concat(this.getMovies().slice(0, index), newMovie, this.getMovies().slice(index + 1));
-    this.setMovies(cards);
-    this._callHandlers(this._dataChangeHandlers);
+  updateMovie() {
+    this._api.getMovies()
+        .then((movies) => {
+          this.setMovies(movies);
+          this._callHandlers(this._filterChangeHandlers);
+        })
+        .catch((err) => {
+          throw err;
+        });
 
     return true;
   }

@@ -18,7 +18,7 @@ const api = new Api(END_POINT, AUTHORIZATION);
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 
-const moviesModel = new MoviesModel();
+const moviesModel = new MoviesModel(api);
 
 const profileNameComponent = new ProfileNameComponent(moviesModel);
 render(siteHeaderElement, profileNameComponent, RenderPosition.BEFOREEND);

@@ -1,24 +1,26 @@
-import AbstractComponent from "./abstract-component.js";
+import AbstractSmartComponent from "./abstract-smart-component";
 
 export const MenuItem = {
   STATISTICS: `main-navigation__item--additional`,
   ALL_MOVIES: `main-navigation__item--active`,
 };
 
-export default class Menu extends AbstractComponent {
-  constructor(filters) {
+export default class Menu extends AbstractSmartComponent {
+  constructor(filters, activeFilterType) {
     super();
 
     this._filters = filters;
+    this._activeFilterType = activeFilterType;
+    this._setFilterChangeHandler = null;
   }
 
   getTemplate() {
     return (`<nav class="main-navigation">
     ${this._filters.map((value) => {
         if (value.name === `All`) {
-          return `<a href="#${value.name.toLowerCase()}" class="main-navigation__item main-navigation__item--active">All movies</a>`;
+          return `<a href="#${value.name.toLowerCase()}" class="main-navigation__item ${this._activeFilterType === value.name ? `main-navigation__item--active` : ``}">All movies</a>`;
         } else {
-          return `<a href="#${value.name.toLowerCase()}" class="main-navigation__item">
+          return `<a href="#${value.name.toLowerCase()}" class="main-navigation__item ${this._activeFilterType === value.name ? `main-navigation__item--active` : ``}">
          ${value.name} <span class="main-navigation__item-count">
          ${value.count}</span></a>`;
         }
@@ -28,16 +30,23 @@ export default class Menu extends AbstractComponent {
     );
   }
 
+  recoveryListeners() {
+    this.setFilterChangeHandler(this._setFilterChangeHandler);
+  }
+
   setFilterChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
+      if (!evt.target.classList.contains(`main-navigation__item`)) {
+        return;
+      }
       const filterName = this._getFilterNameByHash(evt.target.hash);
       if (filterName !== `Stats`) {
         handler(filterName);
+        this._activeFilterType = filterName;
       }
-      this.getElement().querySelectorAll(`.main-navigation__item`)
-          .forEach((it) => it.classList.remove(`main-navigation__item--active`));
-      evt.target.classList.add(`main-navigation__item--active`);
+      this.rerender();
     });
+    this._setFilterChangeHandler = handler;
   }
 
   _getFilterNameByHash(hash) {
