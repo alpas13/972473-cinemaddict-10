@@ -67,6 +67,7 @@ export default class Popup extends AbstractSmartComponent {
     this._emotionChangeClickHandler();
     this._selectPersonalRating();
     this._closePopupHandler();
+    this._disableAnimation();
   }
 
   getTemplate() {
@@ -266,6 +267,7 @@ export default class Popup extends AbstractSmartComponent {
     this.deleteCommentHandler(this._deleteCommentHandler);
     this.addCommentHandler(this._addCommentHandler);
     this._closePopupHandler();
+    this._disableAnimation();
   }
 
   setAddToWatchlistClickHandler(handler) {
@@ -403,5 +405,9 @@ export default class Popup extends AbstractSmartComponent {
       document.removeEventListener(`keydown`, this._closePopupKeydownHandler);
       remove(this);
     }
+  }
+
+  _disableAnimation() {
+    this.getElement().style.animation = `none`;
   }
 }
