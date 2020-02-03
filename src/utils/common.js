@@ -1,18 +1,18 @@
 import moment from "moment";
 
-export const formatDate = (date) => {
+const formatDate = (date) => {
   return moment(date).format(`DD MMMM YYYY`);
 };
 
-export const formatYear = (date) => {
+const formatYear = (date) => {
   return moment(date).format(`YYYY`);
 };
 
-export const formatCommentDate = (date) => {
+const formatCommentDate = (date) => {
   return moment(date).format(`YYYY/MM/DD hh:mm`);
 };
 
-export const formatTime = (durationTime, format = null) => {
+const formatTime = (durationTime, format = null) => {
   let duration = null;
 
   if (durationTime) {
@@ -27,16 +27,18 @@ export const formatTime = (durationTime, format = null) => {
   return null;
 };
 
-export const setProfileName = (movies) => {
-  const moviesNumber = movies.filter((movie) => movie.isWatched === true).length;
-  let profileRating = ``;
+const setProfileName = (movies) => {
+  const moviesNumber = movies.filter((movie) => movie.isWatched).length;
 
   if (moviesNumber >= 1 && moviesNumber < 11) {
-    profileRating = `Novice`;
+    return `Novice`;
   } else if (moviesNumber >= 11 && moviesNumber < 21) {
-    profileRating = `Fan`;
+    return `Fan`;
   } else if (moviesNumber >= 21) {
-    profileRating = `Movie Buff`;
+    return `Movie Buff`;
   }
-  return profileRating;
+
+  return ``;
 };
+
+export {formatDate, formatYear, formatCommentDate, formatTime, setProfileName};

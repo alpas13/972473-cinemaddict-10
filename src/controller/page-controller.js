@@ -127,7 +127,7 @@ export default class PageController {
   }
 
   _onShowMoreButtonClick(movies) {
-    let prevCardCount = this._showingCardCount;
+    const prevCardCount = this._showingCardCount;
     this._showingCardCount += this._SHOWING_CARD_COUNT_BY_BUTTON;
 
     this._renderFilmCards(this._generalFilmsContainer, movies.slice(prevCardCount, this._showingCardCount));

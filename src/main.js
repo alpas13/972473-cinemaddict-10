@@ -1,4 +1,6 @@
-import Api from "./api.js";
+import Api from "./api/api.js";
+import Provider from "./api/provider.js";
+import Store from "./api/store.js";
 import ProfileNameComponent from './components/profile-name.js';
 import SortController from './controller/sort-controller.js';
 import LoadingComponent from "./components/loading.js";
@@ -11,14 +13,26 @@ import {render, RenderPosition} from "./utils/render.js";
 
 import {MenuItem} from "./components/menu.js";
 
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 export const AUTHORIZATION = `Basic kBwYd2o=XN9yZAzdXNlc`;
 export const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
 
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`)
+      .then(() => {
+      }).catch(() => {
+      });
+});
+
 const api = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 
-const moviesModel = new MoviesModel(api);
+const moviesModel = new MoviesModel(apiWithProvider);
 
 const profileNameComponent = new ProfileNameComponent(moviesModel);
 render(siteHeaderElement, profileNameComponent, RenderPosition.BEFOREEND);
@@ -53,12 +67,28 @@ filterController.setOnChange((menuItem) => {
 const filmsComponent = new FilmsComponent();
 render(siteMainElement, filmsComponent, RenderPosition.BEFOREEND);
 
-const pageController = new PageController(filmsComponent.getElement(), moviesModel, api, filterController, sortingController);
+const pageController = new PageController(filmsComponent.getElement(), moviesModel, apiWithProvider, filterController, sortingController);
 
-api.getMovies()
+apiWithProvider.getMovies()
     .then((movies) => {
       moviesModel.setMovies(movies);
-      profileNameComponent.renameProfile();
+      profileNameComponent.rename();
       pageController.render();
       loadingComponent.hide();
     });
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+
+  if (!apiWithProvider.getSynchronize()) {
+    apiWithProvider.sync()
+        .then(() => {
+        })
+        .catch(() => {
+        });
+  }
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});

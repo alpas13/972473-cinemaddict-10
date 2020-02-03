@@ -1,23 +1,23 @@
-export const FilterType = {
+const FilterType = {
   ALL: `All`,
   WATCHLIST: `Watchlist`,
   HISTORY: `History`,
   FAVORITES: `Favorites`,
 };
 
-export const isAddToWatchList = (movies) => {
+const isAddToWatchList = (movies) => {
   return movies.filter((card) => card.isAddToWatchList);
 };
 
-export const isWatched = (movies) => {
+const isWatched = (movies) => {
   return movies.filter((card) => card.isWatched);
 };
 
-export const isFavorite = (movies) => {
+const isFavorite = (movies) => {
   return movies.filter((card) => card.isFavorite);
 };
 
-export const getMoviesByFilter = (movies, filter) => {
+const getMoviesByFilter = (movies, filter) => {
   switch (filter) {
     case FilterType.ALL:
       return movies;
@@ -32,7 +32,7 @@ export const getMoviesByFilter = (movies, filter) => {
   return movies;
 };
 
-export const getFilters = (movies) => {
+const getFilters = (movies) => {
   return Object.values(FilterType)
       .map((filter) => {
         return {
@@ -41,3 +41,5 @@ export const getFilters = (movies) => {
         };
       });
 };
+
+export {FilterType, getMoviesByFilter, getFilters};

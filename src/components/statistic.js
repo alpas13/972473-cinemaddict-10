@@ -140,12 +140,12 @@ export default class Statistic extends AbstractSmartComponent {
           return acc;
         }, {});
 
-    let temp = [];
+    const temps = [];
     for (let [key, value] of Object.entries(genres)) {
-      temp.push({genre: key, value});
+      temps.push({genre: key, value});
     }
 
-    temp = temp.sort((a, b) => {
+    temps.sort((a, b) => {
       if (a.genre < b.genre) {
         return -1;
       } else if (a.genre > b.genre) {
@@ -155,23 +155,22 @@ export default class Statistic extends AbstractSmartComponent {
       }
     }).sort((a, b) => b.value - a.value);
 
-    if (temp[0].genre === ``) {
-      const noNameGenre = temp[0];
-      temp.shift();
-      temp.push(noNameGenre);
+    if (temps[0].genre === ``) {
+      const noNameGenre = temps[0];
+      temps.shift();
+      temps.push(noNameGenre);
     }
 
-    return temp;
+    return temps;
   }
 
   _getMoviesByDateRange(movies, dateFrom, dateTo) {
     if (!dateFrom) {
       return movies;
-    } else {
-      return movies.slice().filter((movie) => {
-        return movie.watchingDate >= dateFrom && movie.watchingDate <= dateTo;
-      });
     }
+    return movies.slice().filter((movie) => {
+      return new Date(movie.watchingDate) >= dateFrom && new Date(movie.watchingDate) <= dateTo;
+    });
   }
 
   _getMoviesByDate(range) {

@@ -17,13 +17,8 @@ export default class Menu extends AbstractSmartComponent {
   getTemplate() {
     return (`<nav class="main-navigation">
     ${this._filters.map((value) => {
-        if (value.name === `All`) {
-          return `<a href="#${value.name.toLowerCase()}" class="main-navigation__item ${this._activeFilterType === value.name ? `main-navigation__item--active` : ``}">All movies</a>`;
-        } else {
-          return `<a href="#${value.name.toLowerCase()}" class="main-navigation__item ${this._activeFilterType === value.name ? `main-navigation__item--active` : ``}">
-         ${value.name} <span class="main-navigation__item-count">
-         ${value.count}</span></a>`;
-        }
+        return `<a href="#${value.name.toLowerCase()}" class="main-navigation__item ${this._activeFilterType === value.name ? `main-navigation__item--active` : ``}">
+         ${value.name === `All` ? `All movies` : value.name}${value.name !== `All` ? `<span class="main-navigation__item-count">${value.count}</span>` : ``}</a>`;
       }).join(`\n`)}
     <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
   </nav>`

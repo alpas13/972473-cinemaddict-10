@@ -30,13 +30,17 @@ export default class MovieController {
 
     this._filmCardComponent = new FilmCardComponent(card);
     this._popupComponent = new PopupComponent(card, this._comments);
-    this._setPopupHandlers(card);
+    this._setPopupButtonsHandlers(card);
+    this._setPopupUserRatingHandlers(card);
+    this._setPopupCommentHandlers(card);
 
     const onClickHandler = () => {
       this._api.getComment(card.id)
           .then((comments) => {
             this._popupComponent = new PopupComponent(card, comments);
-            this._setPopupHandlers(card);
+            this._setPopupButtonsHandlers(card);
+            this._setPopupUserRatingHandlers(card);
+            this._setPopupCommentHandlers(card);
             this._onViewChange();
             render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
             this._mode = Mode.EDIT;
@@ -78,7 +82,7 @@ export default class MovieController {
     }
   }
 
-  _setPopupHandlers(card) {
+  _setPopupButtonsHandlers(card) {
     this._popupComponent.setAddToWatchlistClickHandler(() => {
       const newData = Movie.clone(card);
       newData.isAddToWatchList = !newData.isAddToWatchList;
@@ -104,7 +108,9 @@ export default class MovieController {
 
       this._onDataChange(this, newData, null);
     });
+  }
 
+  _setPopupUserRatingHandlers(card) {
     this._popupComponent.setFilmUserRatingHandler((rating) => {
       const newData = Movie.clone(card);
       newData.personalRating = Number(rating);
@@ -127,7 +133,9 @@ export default class MovieController {
 
       this._onDataChange(this, newData, null);
     });
+  }
 
+  _setPopupCommentHandlers(card) {
     this._popupComponent.deleteCommentHandler((id) => {
       this._api.deleteComment(id)
           .then(() => {
@@ -150,10 +158,6 @@ export default class MovieController {
           .catch(() => {
             this._shake();
           });
-    });
-
-    this._popupComponent.closePopupHandler(() => {
-      this._onDataChange(this, card, `update`);
     });
   }
 
