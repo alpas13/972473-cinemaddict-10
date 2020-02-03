@@ -30,13 +30,17 @@ export default class MovieController {
 
     this._filmCardComponent = new FilmCardComponent(card);
     this._popupComponent = new PopupComponent(card, this._comments);
-    this._setPopupHandlers(card);
+    this._setPopupButtonsHandlers(card);
+    this._setPopupUserRatingHandlers(card);
+    this._setPopupCommentHandlers(card);
 
     const onClickHandler = () => {
       this._api.getComment(card.id)
           .then((comments) => {
             this._popupComponent = new PopupComponent(card, comments);
-            this._setPopupHandlers(card);
+            this._setPopupButtonsHandlers(card);
+            this._setPopupUserRatingHandlers(card);
+            this._setPopupCommentHandlers(card);
             this._onViewChange();
             render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
             this._mode = Mode.EDIT;
@@ -60,6 +64,7 @@ export default class MovieController {
     this._filmCardComponent.setAlreadyWatchedClickHandler(() => {
       const newData = Movie.clone(card);
       newData.isWatched = !newData.isWatched;
+      newData.watchingDate = new Date().toISOString();
       this._onDataChange(this, card, newData);
     });
 
@@ -77,12 +82,12 @@ export default class MovieController {
     }
   }
 
-  _setPopupHandlers(card) {
+  _setPopupButtonsHandlers(card) {
     this._popupComponent.setAddToWatchlistClickHandler(() => {
       const newData = Movie.clone(card);
       newData.isAddToWatchList = !newData.isAddToWatchList;
 
-      this._onDataChange(this, card, newData);
+      this._onDataChange(this, newData, null);
     });
 
     this._popupComponent.setAlreadyWatchedClickHandler(() => {
@@ -94,23 +99,25 @@ export default class MovieController {
         newData.personalRating = this._NOT_PERSONAL_RATING;
       }
 
-      this._onDataChange(this, card, newData);
+      this._onDataChange(this, newData, null);
     });
 
     this._popupComponent.setAddToFavoriteHandler(() => {
       const newData = Movie.clone(card);
       newData.isFavorite = !newData.isFavorite;
 
-      this._onDataChange(this, card, newData);
+      this._onDataChange(this, newData, null);
     });
+  }
 
+  _setPopupUserRatingHandlers(card) {
     this._popupComponent.setFilmUserRatingHandler((rating) => {
       const newData = Movie.clone(card);
       newData.personalRating = Number(rating);
 
       this._api.updateMovie(card.id, newData)
           .then((movie) => {
-            this._onDataChange(this, movie, `personalRating`);
+            this.render(movie);
           }).catch(() => {
             const ratingElements = this._popupComponent.getElement().querySelectorAll(`.film-details__user-rating-input`);
             ratingElements.forEach((it) => {
@@ -124,15 +131,16 @@ export default class MovieController {
       const newData = Movie.clone(card);
       newData.personalRating = this._NOT_PERSONAL_RATING;
 
-      this._onDataChange(this, card, newData);
+      this._onDataChange(this, newData, null);
     });
+  }
 
+  _setPopupCommentHandlers(card) {
     this._popupComponent.deleteCommentHandler((id) => {
       this._api.deleteComment(id)
           .then(() => {
             this._comments = this._deleteCommentId(this._comments, id);
-            const newData = this._deleteCommentId(card, id);
-            this._onDataChange(this, newData, null);
+            this._onDataChange(this, card, null);
           })
           .catch((err) => {
             this._popupComponent.rerender();
@@ -153,25 +161,15 @@ export default class MovieController {
     });
   }
 
-  _deleteCommentId(commentsData, id) {
-    if (commentsData.comments) {
-      const index = commentsData.comments.findIndex((it) => it === id);
-      if (index === -1) {
-        return commentsData;
-      }
+  _deleteCommentId(comments, id) {
+    const index = comments.findIndex((it) => it.id === id);
 
-      commentsData.comments = [].concat(commentsData.comments.slice(0, index), commentsData.comments.slice(index + 1));
-      return commentsData;
-    } else {
-      const index = commentsData.findIndex((it) => it.id === id);
-      if (index === -1) {
-        return commentsData;
-      }
-
-      commentsData = [].concat(commentsData.slice(0, index), commentsData.slice(index + 1));
-      return commentsData;
+    if (index === -1) {
+      return comments;
     }
 
+    comments = [].concat(comments.slice(0, index), comments.slice(index + 1));
+    return comments;
   }
 
   setDefaultView() {

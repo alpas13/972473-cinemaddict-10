@@ -1,5 +1,5 @@
-import Movie from "./models/movie.js";
-import Comment from "./models/comment.js";
+import Movie from "../models/movie.js";
+import Comment from "../models/comment.js";
 
 const Method = {
   GET: `GET`,
@@ -11,9 +11,9 @@ const Method = {
 const checkStatus = (response) => {
   if (response.status >= 200 || response.status < 300) {
     return response;
-  } else {
-    throw new Error(`${response.status}: ${response.statusText}`);
   }
+  throw new Error(`${response.status}: ${response.statusText}`);
+
 };
 
 export default class Api {
@@ -56,6 +56,15 @@ export default class Api {
 
   deleteComment(id) {
     return this._load({url: `comments/${id}`, method: Method.DELETE});
+  }
+
+  syncData(data) {
+    return this._load({url: `movies/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+        .then((response) => response.json());
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {

@@ -11,7 +11,7 @@ export default class FilmCard extends AbstractComponent {
     this._rating = totalRating;
     this._year = releaseDate;
     this._runtime = runtime;
-    this._genre = genre.join(` `);
+    this._genre = genre;
     this._description = description.length > 140 ? description.slice(0, 139).concat(`...`) : description;
     this._comments = comments.length;
     this._isAddToWatchList = isAddToWatchList;
@@ -26,7 +26,7 @@ export default class FilmCard extends AbstractComponent {
           <p class="film-card__info">
             <span class="film-card__year">${formatYear(this._year)}</span>
             <span class="film-card__duration">${formatTime(this._runtime)}</span>
-            <span class="film-card__genre">${this._genre}</span>
+            <span class="film-card__genre">${this._genre.slice().join(` `)}</span>
           </p>
           <img src="${this._poster}" alt="" class="film-card__poster">
           <p class="film-card__description">${this._description}</p>

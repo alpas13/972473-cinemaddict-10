@@ -61,8 +61,13 @@ export default class Popup extends AbstractSmartComponent {
     this._deleteCommentHandler = null;
     this._addCommentHandler = null;
 
-    this._subscribeOnEvents();
+    this._addCommentKeydownHandler = this._addCommentKeydownHandler.bind(this);
+    this._closePopupKeydownHandler = this._closePopupKeydownHandler.bind(this);
+
+    this._emotionChangeClickHandler();
     this._selectPersonalRating();
+    this._closePopupHandler();
+    this._disableAnimation();
   }
 
   getTemplate() {
@@ -254,37 +259,15 @@ export default class Popup extends AbstractSmartComponent {
   }
 
   recoveryListeners() {
-    this._subscribeOnEvents();
+    this._emotionChangeClickHandler();
     this.setAddToWatchlistClickHandler(this._setAddToWatchlistClickHandler);
     this.setAlreadyWatchedClickHandler(this._setAlreadyWatchedClickHandler);
     this.setAddToFavoriteHandler(this._setAddToFavoriteHandler);
     this.setFilmUserRatingHandler(this._setFilmUserRatingHandler);
     this.deleteCommentHandler(this._deleteCommentHandler);
     this.addCommentHandler(this._addCommentHandler);
-  }
-
-  _subscribeOnEvents() {
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => remove(this));
-    document.addEventListener(`keydown`, (evt) => {
-      const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-      if (isEscKey) {
-        remove(this);
-      }
-    });
-
-    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`change`, (evt) => {
-      this._emotionChangeClickHandler(evt);
-    });
-
-    document.addEventListener(`keydown`, (evt) => {
-      if (evt.ctrlKey) {
-        const commentText = this.getElement().querySelector(`.film-details__comment-input`).value;
-        if (this._comment !== commentText) {
-          this._comment = he.encode(commentText);
-        }
-      }
-    });
+    this._closePopupHandler();
+    this._disableAnimation();
   }
 
   setAddToWatchlistClickHandler(handler) {
@@ -351,26 +334,28 @@ export default class Popup extends AbstractSmartComponent {
   }
 
   addCommentHandler(handler) {
-    document.addEventListener(`keydown`, (evt) => {
-      const isEnterKey = evt.key === `Enter`;
-      if ((evt.ctrlKey) && isEnterKey && this._emotion && this._comment) {
-        const commentElement = this.getElement().querySelector(`.film-details__comment-input`);
-        const emojiElements = this.getElement().querySelectorAll(`.film-details__emoji-item`);
-        const commentData = {
-          comment: this._comment,
-          date: new Date().toISOString(),
-          emotion: this._emotion
-        };
-        commentElement.disabled = `disabled`;
-        emojiElements.forEach((emoji) => {
-          emoji.disabled = `disabled`;
-        });
-        handler(commentData);
-        this._comment = ``;
-        this._emotion = ``;
-      }
-    });
     this._addCommentHandler = handler;
+    document.addEventListener(`keydown`, this._addCommentKeydownHandler);
+  }
+
+  _emotionChangeClickHandler() {
+    this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`change`, (evt) => {
+      if (evt.target.tagName === `INPUT`) {
+        this._emotion = evt.target.id.substring(this._ATTRIBUTE_FOR_PREFIX.length);
+        this._newCommetnEmoji = `<img src="./images/emoji/${this._emotion}.png" width="55" height="55" alt="emoji">`;
+      }
+      this.rerender();
+    });
+  }
+
+  _closePopupHandler() {
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
+      document.removeEventListener(`keydown`, this._addCommentKeydownHandler);
+      document.removeEventListener(`keydown`, this._closePopupKeydownHandler);
+      remove(this);
+    });
+
+    document.addEventListener(`keydown`, this._closePopupKeydownHandler);
   }
 
   _selectPersonalRating() {
@@ -385,11 +370,44 @@ export default class Popup extends AbstractSmartComponent {
     }
   }
 
-  _emotionChangeClickHandler(evt) {
-    if (evt.target.tagName === `INPUT`) {
-      this._emotion = evt.target.id.substring(this._ATTRIBUTE_FOR_PREFIX.length);
-      this._newCommetnEmoji = `<img src="./images/emoji/${this._emotion}.png" width="55" height="55" alt="emoji">`;
+  _addCommentKeydownHandler(evt) {
+    if (evt.ctrlKey) {
+      const commentText = this.getElement().querySelector(`.film-details__comment-input`).value;
+      if (this._comment !== commentText) {
+        this._comment = he.encode(commentText);
+      }
     }
-    this.rerender();
+    const isEnterKey = evt.key === `Enter`;
+    if ((evt.ctrlKey) && isEnterKey && this._emotion && this._comment) {
+      const commentElement = this.getElement().querySelector(`.film-details__comment-input`);
+      const emojiElements = this.getElement().querySelectorAll(`.film-details__emoji-item`);
+      const commentData = {
+        comment: this._comment,
+        date: new Date().toISOString(),
+        emotion: this._emotion
+      };
+      commentElement.disabled = `disabled`;
+      emojiElements.forEach((emoji) => {
+        emoji.disabled = `disabled`;
+      });
+      this._addCommentHandler(commentData);
+      document.removeEventListener(`keydown`, this._addCommentKeydownHandler);
+      this._comment = ``;
+      this._emotion = ``;
+    }
+  }
+
+  _closePopupKeydownHandler(evt) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      document.removeEventListener(`keydown`, this._addCommentKeydownHandler);
+      document.removeEventListener(`keydown`, this._closePopupKeydownHandler);
+      remove(this);
+    }
+  }
+
+  _disableAnimation() {
+    this.getElement().style.animation = `none`;
   }
 }

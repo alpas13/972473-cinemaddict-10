@@ -18,7 +18,7 @@ export default class ProfileName extends AbstractSmartComponent {
     );
   }
 
-  renameProfile() {
+  rename() {
     this._profileRating = setProfileName(this._movies.getAllMovies());
 
     this.rerender();

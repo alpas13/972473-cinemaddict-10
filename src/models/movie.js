@@ -1,53 +1,25 @@
 export default class Movie {
   constructor(data) {
-    const {id, comments, film_info: filmInfo, user_details: userDetails} = data;
-    const {
-      title,
-      alternative_title: alternativeTitle,
-      total_rating: totalRating,
-      poster,
-      age_rating: ageRating,
-      director,
-      writers,
-      actors,
-      release,
-      runtime,
-      genre,
-      description
-    } = filmInfo;
-    const {
-      date,
-      release_country: releaseCountry
-    } = release;
-    const {
-      personal_rating: personalRating,
-      watchlist,
-      already_watched: alreadyWatched,
-      watching_date: watchingDate,
-      favorite
-    } = userDetails;
-
-
-    this.id = id;
-    this.comments = comments;
-    this.title = title;
-    this.alternativeTitle = alternativeTitle;
-    this.totalRating = totalRating;
-    this.poster = poster;
-    this.ageRating = ageRating;
-    this.director = director;
-    this.writers = writers;
-    this.actors = actors;
-    this.releaseDate = new Date(date);
-    this.releaseCountry = releaseCountry;
-    this.runtime = runtime;
-    this.genre = genre;
-    this.description = description;
-    this.personalRating = personalRating;
-    this.isAddToWatchList = Boolean(watchlist);
-    this.isWatched = Boolean(alreadyWatched);
-    this.watchingDate = watchingDate ? new Date(watchingDate) : null;
-    this.isFavorite = Boolean(favorite);
+    this.id = data.id;
+    this.comments = data.comments;
+    this.title = data.film_info.title;
+    this.alternativeTitle = data.film_info.alternative_title;
+    this.totalRating = data.film_info.total_rating;
+    this.poster = data.film_info.poster;
+    this.ageRating = data.film_info.age_rating;
+    this.director = data.film_info.director;
+    this.writers = data.film_info.writers;
+    this.actors = data.film_info.actors;
+    this.releaseDate = data.film_info.release.date;
+    this.releaseCountry = data.film_info.release.release_country;
+    this.runtime = data.film_info.runtime;
+    this.genre = data.film_info.genre;
+    this.description = data.film_info.description;
+    this.personalRating = data.user_details.personal_rating;
+    this.isAddToWatchList = data.user_details.watchlist;
+    this.isWatched = data.user_details.already_watched;
+    this.watchingDate = data.user_details.watching_date;
+    this.isFavorite = data.user_details.favorite;
   }
 
   toRAW() {
@@ -75,8 +47,8 @@ export default class Movie {
         "personal_rating": this.personalRating,
         "watchlist": this.isAddToWatchList,
         "already_watched": this.isWatched,
-        "watching_date": this.watchingDate,
-        "favorite": this.isFavorite
+        "watching_date": this.watchingDate ? this.watchingDate : new Date(0).toISOString(),
+        "favorite": this.isFavorite,
       }
     };
   }

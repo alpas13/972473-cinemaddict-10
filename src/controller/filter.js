@@ -23,7 +23,7 @@ export default class Filter {
 
     const oldComponent = this._menuComponent;
 
-    this._menuComponent = new MenuComponent(filters);
+    this._menuComponent = new MenuComponent(filters, this._activeFilterType);
     this._menuComponent.setFilterChangeHandler(this._onFilterChange);
     this._menuComponent.statShowClickHandler((menuItem) => {
       this._menuItem = menuItem;
