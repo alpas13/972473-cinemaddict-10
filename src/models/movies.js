@@ -32,7 +32,6 @@ export default class Movies {
     this._api.getMovies()
         .then((movies) => {
           this.setMovies(movies);
-          this._callHandlers(this._filterChangeHandlers);
         })
         .catch((err) => {
           throw err;

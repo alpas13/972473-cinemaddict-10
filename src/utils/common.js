@@ -1,5 +1,32 @@
 import moment from "moment";
 
+const DEBOUNCE_TIMEOUT = 500;
+
+moment.relativeTimeThreshold(`mm`, 3);
+moment.relativeTimeThreshold(`m`, 60);
+moment.relativeTimeThreshold(`hh`, 1.59);
+moment.relativeTimeThreshold(`h`, 24);
+
+
+moment.updateLocale(`en`, {
+  relativeTime: {
+    future: `in %s`,
+    past: `%s`,
+    s: `now`,
+    ss: `now`,
+    m: `a minute ago`,
+    mm: `few minutes ago`,
+    h: `an hour ago`,
+    hh: `few hours ago`,
+    d: `a day ago`,
+    dd: `%d days ago`,
+    M: `a month ago`,
+    MM: `%d months ago`,
+    y: `a year ago`,
+    yy: `%d years ago`
+  }
+});
+
 const formatDate = (date) => {
   return moment(date).format(`DD MMMM YYYY`);
 };
@@ -9,7 +36,7 @@ const formatYear = (date) => {
 };
 
 const formatCommentDate = (date) => {
-  return moment(date).format(`YYYY/MM/DD hh:mm`);
+  return moment(date).fromNow();
 };
 
 const formatTime = (durationTime, format = null) => {
@@ -41,4 +68,4 @@ const setProfileName = (movies) => {
   return ``;
 };
 
-export {formatDate, formatYear, formatCommentDate, formatTime, setProfileName};
+export {DEBOUNCE_TIMEOUT, formatDate, formatYear, formatCommentDate, formatTime, setProfileName};
