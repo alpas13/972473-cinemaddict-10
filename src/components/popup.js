@@ -1,7 +1,8 @@
 import he from "he";
+import debounce from 'lodash/debounce';
 import AbstractSmartComponent from "./abstract-smart-component";
 import {remove} from "../utils/render.js";
-import {formatDate, formatTime, formatCommentDate} from "../utils/common.js";
+import {DEBOUNCE_TIMEOUT, formatDate, formatTime, formatCommentDate} from "../utils/common.js";
 
 export default class Popup extends AbstractSmartComponent {
   constructor(detailData, commentsData) {
@@ -271,23 +272,26 @@ export default class Popup extends AbstractSmartComponent {
   }
 
   setAddToWatchlistClickHandler(handler) {
-    this.getElement().querySelector(`#watchlist`).addEventListener(`click`, () => {
+    this.getElement().querySelector(`#watchlist`).addEventListener(`click`, debounce(() => {
       handler();
-    });
+    }, DEBOUNCE_TIMEOUT));
+
     this._setAddToWatchlistClickHandler = handler;
   }
 
   setAlreadyWatchedClickHandler(handler) {
-    this.getElement().querySelector(`#watched`).addEventListener(`click`, () => {
+    this.getElement().querySelector(`#watched`).addEventListener(`click`, debounce(() => {
       handler();
-    });
+    }, DEBOUNCE_TIMEOUT));
+
     this._setAlreadyWatchedClickHandler = handler;
   }
 
   setAddToFavoriteHandler(handler) {
-    this.getElement().querySelector(`#favorite`).addEventListener(`click`, () => {
+    this.getElement().querySelector(`#favorite`).addEventListener(`click`, debounce(() => {
       handler();
-    });
+    }, DEBOUNCE_TIMEOUT));
+
     this._setAddToFavoriteHandler = handler;
   }
 
