@@ -5,7 +5,7 @@ import {remove} from "../utils/render.js";
 import {DEBOUNCE_TIMEOUT, formatDate, formatTime, formatCommentDate} from "../utils/common.js";
 
 export default class Popup extends AbstractSmartComponent {
-  constructor(detailData, commentsData) {
+  constructor(detailData, commentsData, animation, scrollValue) {
     super();
 
     this._EMOJI_PATH = `./images/emoji/`;
@@ -55,6 +55,9 @@ export default class Popup extends AbstractSmartComponent {
     this._emotion = ``;
     this._comment = ``;
 
+    this._animation = animation;
+    this.scrollValue = null;
+
     this._setAddToWatchlistClickHandler = null;
     this._setAlreadyWatchedClickHandler = null;
     this._setAddToFavoriteHandler = null;
@@ -68,11 +71,10 @@ export default class Popup extends AbstractSmartComponent {
     this._emotionChangeClickHandler();
     this._selectPersonalRating();
     this._closePopupHandler();
-    this._disableAnimation();
   }
 
   getTemplate() {
-    return (`<section class="film-details">
+    return (`<section class="film-details" ${this._animation ? `style="animation: none"` : ``} >
   <form class="film-details__inner" action="" method="get">
     <div class="form-details__top-container">
       <div class="film-details__close">
@@ -268,11 +270,11 @@ export default class Popup extends AbstractSmartComponent {
     this.deleteCommentHandler(this._deleteCommentHandler);
     this.addCommentHandler(this._addCommentHandler);
     this._closePopupHandler();
-    this._disableAnimation();
   }
 
   setAddToWatchlistClickHandler(handler) {
     this.getElement().querySelector(`#watchlist`).addEventListener(`click`, debounce(() => {
+      this._setScrollValue();
       handler();
     }, DEBOUNCE_TIMEOUT));
 
@@ -281,6 +283,7 @@ export default class Popup extends AbstractSmartComponent {
 
   setAlreadyWatchedClickHandler(handler) {
     this.getElement().querySelector(`#watched`).addEventListener(`click`, debounce(() => {
+      this._setScrollValue();
       handler();
     }, DEBOUNCE_TIMEOUT));
 
@@ -289,6 +292,7 @@ export default class Popup extends AbstractSmartComponent {
 
   setAddToFavoriteHandler(handler) {
     this.getElement().querySelector(`#favorite`).addEventListener(`click`, debounce(() => {
+      this._setScrollValue();
       handler();
     }, DEBOUNCE_TIMEOUT));
 
@@ -301,6 +305,7 @@ export default class Popup extends AbstractSmartComponent {
     if (element) {
       element.addEventListener(`change`, (evt) => {
         if (evt.target.tagName === `INPUT`) {
+          this._setScrollValue();
           handler(evt.target.value);
           ratingElements.forEach((it) => {
             it.disabled = `disabled`;
@@ -316,6 +321,7 @@ export default class Popup extends AbstractSmartComponent {
     if (element) {
       element.addEventListener(`click`, (evt) => {
         if (evt.target.tagName === `BUTTON`) {
+          this._setScrollValue();
           handler();
         }
       });
@@ -328,6 +334,7 @@ export default class Popup extends AbstractSmartComponent {
         .addEventListener(`click`, (evt) => {
           evt.preventDefault();
           if (evt.target.tagName === `BUTTON`) {
+            this._setScrollValue();
             handler(evt.target.id);
             const deleteButton = evt.target;
             deleteButton.textContent = `Deleting…`;
@@ -340,11 +347,13 @@ export default class Popup extends AbstractSmartComponent {
   addCommentHandler(handler) {
     this._addCommentHandler = handler;
     document.addEventListener(`keydown`, this._addCommentKeydownHandler);
+    this._setScrollValue();
   }
 
   _emotionChangeClickHandler() {
     this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`change`, (evt) => {
       if (evt.target.tagName === `INPUT`) {
+        this._setScrollValue();
         this._emotion = evt.target.id.substring(this._ATTRIBUTE_FOR_PREFIX.length);
         this._newCommetnEmoji = `<img src="./images/emoji/${this._emotion}.png" width="55" height="55" alt="emoji">`;
       }
@@ -354,6 +363,7 @@ export default class Popup extends AbstractSmartComponent {
 
   _closePopupHandler() {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
+      this.scrollValue = null;
       document.removeEventListener(`keydown`, this._addCommentKeydownHandler);
       document.removeEventListener(`keydown`, this._closePopupKeydownHandler);
       remove(this);
@@ -411,7 +421,11 @@ export default class Popup extends AbstractSmartComponent {
     }
   }
 
-  _disableAnimation() {
-    this.getElement().style.animation = `none`;
+  _setScrollValue() {
+    this.scrollValue = this.getElement().scrollTop;
+  }
+
+  scrollElement(scrollValue) {
+    this.getElement().scrollTop = scrollValue;
   }
 }

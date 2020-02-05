@@ -39,7 +39,7 @@ export default class Menu extends AbstractSmartComponent {
       }
 
       const filterName = evt.target.dataset.filter;
-      if (filterName !== `stats`) {
+      if (filterName !== `stats` && this._activeFilterType !== filterName) {
         handler(filterName);
         this._activeFilterType = filterName;
       }

@@ -12,6 +12,7 @@ export default class PageController {
     this._moviesModel = moviesModel;
     this._api = api;
     this._sortingController = sortingController;
+    this._filterController = filterController;
     this._TOTAL_EXTRA_CARDS = 2;
     this._SHOWING_CARD_COUNT_ON_START = 5;
     this._SHOWING_CARD_COUNT_BY_BUTTON = 5;
@@ -149,19 +150,13 @@ export default class PageController {
   }
 
   _onDataChange(movieController, oldData, newData) {
-    if (newData === null) {
-      this._api.updateMovie(oldData.id, oldData)
-          .then((movie) => {
-            movieController.render(movie);
-          }).catch((err) => {
-            throw err;
-          });
-    } else if (newData === `update`) {
+    if (newData === `update`) {
       this._moviesModel.updateMovie();
     } else {
       this._api.updateMovie(oldData.id, newData)
           .then(() => {
             this._moviesModel.updateMovie();
+            movieController.render();
           }).catch((err) => {
             throw err;
           });

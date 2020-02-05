@@ -22,6 +22,8 @@ export default class MovieController {
     this._mode = Mode.DEFAULT;
     this._api = api;
     this._comments = [];
+    this._animation = null;
+    this._scrollValue = null;
   }
 
   render(card) {
@@ -29,7 +31,7 @@ export default class MovieController {
     const oldPopupComponent = this._popupComponent;
 
     this._filmCardComponent = new FilmCardComponent(card);
-    this._popupComponent = new PopupComponent(card, this._comments);
+    this._popupComponent = new PopupComponent(card, this._comments, this._animation);
     this._setPopupButtonsHandlers(card);
     this._setPopupUserRatingHandlers(card);
     this._setPopupCommentHandlers(card);
@@ -37,7 +39,7 @@ export default class MovieController {
     const onClickHandler = () => {
       this._api.getComment(card.id)
           .then((comments) => {
-            this._popupComponent = new PopupComponent(card, comments);
+            this._popupComponent = new PopupComponent(card, comments, this._animation);
             this._setPopupButtonsHandlers(card);
             this._setPopupUserRatingHandlers(card);
             this._setPopupCommentHandlers(card);
@@ -45,6 +47,7 @@ export default class MovieController {
             render(document.body, this._popupComponent, RenderPosition.BEFOREEND);
             this._mode = Mode.EDIT;
             this._comments = comments;
+            this._animation = true;
           })
           .catch((err) => {
             throw err;
@@ -77,6 +80,7 @@ export default class MovieController {
     if (oldFilmCardComponent && oldPopupComponent) {
       replace(this._filmCardComponent, oldFilmCardComponent);
       replace(this._popupComponent, oldPopupComponent);
+      this._popupComponent.scrollElement(this._scrollValue);
     } else {
       render(this._container.getElement(), this._filmCardComponent, RenderPosition.BEFOREEND);
     }
@@ -86,27 +90,30 @@ export default class MovieController {
     this._popupComponent.setAddToWatchlistClickHandler(() => {
       const newData = Movie.clone(card);
       newData.isAddToWatchList = !newData.isAddToWatchList;
+      this._scrollValue = this._popupComponent.scrollValue;
 
-      this._onDataChange(this, newData, null);
+      this._onDataChange(this, card, newData);
     });
 
     this._popupComponent.setAlreadyWatchedClickHandler(() => {
       const newData = Movie.clone(card);
       newData.isWatched = !newData.isWatched;
       newData.watchingDate = new Date().toISOString();
+      this._scrollValue = this._popupComponent.scrollValue;
 
       if (!newData.isWatched) {
         newData.personalRating = this._NOT_PERSONAL_RATING;
       }
 
-      this._onDataChange(this, newData, null);
+      this._onDataChange(this, card, newData);
     });
 
     this._popupComponent.setAddToFavoriteHandler(() => {
       const newData = Movie.clone(card);
       newData.isFavorite = !newData.isFavorite;
+      this._scrollValue = this._popupComponent.scrollValue;
 
-      this._onDataChange(this, newData, null);
+      this._onDataChange(this, card, newData);
     });
   }
 
@@ -117,6 +124,7 @@ export default class MovieController {
 
       this._api.updateMovie(card.id, newData)
           .then((movie) => {
+            this._scrollValue = this._popupComponent.scrollValue;
             this.render(movie);
           }).catch(() => {
             const ratingElements = this._popupComponent.getElement().querySelectorAll(`.film-details__user-rating-input`);
@@ -130,6 +138,7 @@ export default class MovieController {
     this._popupComponent.deleteFilmUserRatingHandler(() => {
       const newData = Movie.clone(card);
       newData.personalRating = this._NOT_PERSONAL_RATING;
+      this._scrollValue = this._popupComponent.scrollValue;
 
       this._onDataChange(this, newData, null);
     });
@@ -140,6 +149,7 @@ export default class MovieController {
       this._api.deleteComment(id)
           .then(() => {
             this._comments = this._deleteCommentId(this._comments, id);
+            this._scrollValue = this._popupComponent.scrollValue;
             this._onDataChange(this, card, null);
           })
           .catch((err) => {
@@ -153,6 +163,7 @@ export default class MovieController {
           .then((response) => {
             const movie = Movie.parseMovie(response.movie);
             this._comments = Comment.parseComments(response.comments);
+            this._scrollValue = this._popupComponent.scrollValue;
             this._onDataChange(this, movie, null);
           })
           .catch(() => {
